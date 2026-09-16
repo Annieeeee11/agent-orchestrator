@@ -1989,6 +1989,15 @@ func mergeabilityFromProviderFacts(providerMergeable, providerMergeState, ci, re
 		out.State = string(domain.MergeBlocked)
 		addBlocker("blocked_by_provider")
 	}
+	// UNSTABLE outranks draft / CI / review (doc.go rule 3, and the
+	// mergeabilityFromGraphQL sibling): GitHub reports UNSTABLE when the PR
+	// *is* mergeable but a non-required check failed or is pending. Such a PR
+	// also has a FAILURE rollup (-> ci == failing), so leaving this below the
+	// blockers downgraded every genuinely-mergeable UNSTABLE PR to blocked.
+	if state == "UNSTABLE" {
+		out.State = string(domain.MergeUnstable)
+		return out
+	}
 	if draft {
 		out.State = string(domain.MergeBlocked)
 		addBlocker("draft")
@@ -2006,10 +2015,6 @@ func mergeabilityFromProviderFacts(providerMergeable, providerMergeState, ci, re
 		addBlocker("review_required")
 	}
 	if out.State == string(domain.MergeBlocked) {
-		return out
-	}
-	if state == "UNSTABLE" {
-		out.State = string(domain.MergeUnstable)
 		return out
 	}
 	if mergeable == "MERGEABLE" && (state == "CLEAN" || state == "HAS_HOOKS" || state == "") &&
