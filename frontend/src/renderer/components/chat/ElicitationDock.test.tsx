@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { aoBridge } from "../../lib/bridge";
 import type { ConversationActivity } from "../../types/conversation";
-import { ElicitationCard } from "./ElicitationCard";
+import { ElicitationDock } from "./ElicitationDock";
 
 function activity(detail: ConversationActivity["detail"]): ConversationActivity {
 	return {
@@ -20,7 +20,7 @@ function activity(detail: ConversationActivity["detail"]): ConversationActivity 
 	};
 }
 
-describe("ElicitationCard", () => {
+describe("ElicitationDock", () => {
 	const claudeQuestions = {
 		type: "object" as const,
 		required: ["question_0", "question_1"],
@@ -48,7 +48,7 @@ describe("ElicitationCard", () => {
 
 	it("shows one Claude question and its Other field at a time", () => {
 		render(
-			<ElicitationCard
+			<ElicitationDock
 				activity={activity({ inputMode: "form", schema: claudeQuestions })}
 				onResolve={vi.fn()}
 			/>,
@@ -63,7 +63,7 @@ describe("ElicitationCard", () => {
 	it("validates the active Claude question before moving forward", async () => {
 		const user = userEvent.setup();
 		render(
-			<ElicitationCard
+			<ElicitationDock
 				activity={activity({ inputMode: "form", schema: claudeQuestions })}
 				onResolve={vi.fn()}
 			/>,
@@ -78,7 +78,7 @@ describe("ElicitationCard", () => {
 	it("navigates Claude questions and preserves answers when going back", async () => {
 		const user = userEvent.setup();
 		render(
-			<ElicitationCard
+			<ElicitationDock
 				activity={activity({ inputMode: "form", schema: claudeQuestions })}
 				onResolve={vi.fn()}
 			/>,
@@ -98,7 +98,7 @@ describe("ElicitationCard", () => {
 		const user = userEvent.setup();
 		const onResolve = vi.fn().mockResolvedValue(undefined);
 		render(
-			<ElicitationCard
+			<ElicitationDock
 				activity={activity({
 					inputMode: "form",
 					message: "Which implementation should we use?",
@@ -124,7 +124,7 @@ describe("ElicitationCard", () => {
 
 	it("keeps generic MCP forms in the all-fields layout", () => {
 		render(
-			<ElicitationCard
+			<ElicitationDock
 				activity={activity({
 					inputMode: "form",
 					schema: {
@@ -149,7 +149,7 @@ describe("ElicitationCard", () => {
 		const user = userEvent.setup();
 		const onResolve = vi.fn();
 		render(
-			<ElicitationCard
+			<ElicitationDock
 				activity={activity({
 					inputMode: "form",
 					schema: {
@@ -171,7 +171,7 @@ describe("ElicitationCard", () => {
 		const openExternal = vi.spyOn(aoBridge.app, "openExternal").mockResolvedValue(undefined);
 		const onResolve = vi.fn().mockResolvedValue(undefined);
 		render(
-			<ElicitationCard
+			<ElicitationDock
 				activity={activity({ inputMode: "url", url: "https://console.anthropic.com/oauth", message: "Sign in" })}
 				onResolve={onResolve}
 			/>,
@@ -185,7 +185,7 @@ describe("ElicitationCard", () => {
 
 	it("refuses unsafe URL schemes", () => {
 		render(
-			<ElicitationCard
+			<ElicitationDock
 				activity={activity({ inputMode: "url", url: "file:///Users/alice/.ssh/id_rsa" })}
 				onResolve={vi.fn()}
 			/>,
