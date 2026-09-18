@@ -149,7 +149,7 @@ describe("TopbarOpenEditorButton", () => {
 			workspaceAvailable: true,
 		});
 		renderButton();
-		expect(await screen.findByRole("button", { name: "Choose editor" })).toBeDisabled();
+		expect(await screen.findByRole("button", { name: "No editor installed" })).toBeDisabled();
 		expect(screen.queryByRole("alert")).not.toBeInTheDocument();
 		await userEvent.click(screen.getByRole("button", { name: "Open workspace options" }));
 		expect((await screen.findAllByRole("menuitem")).map((item) => item.textContent)).toEqual([

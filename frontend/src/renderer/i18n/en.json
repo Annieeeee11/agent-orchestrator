@@ -385,6 +385,7 @@
 	"editor.preparingWorkspace": "Preparing workspace…",
 	"editor.chooseEditor": "Choose editor",
 	"editor.chooseEditorTitle": "Choose an installed editor or use a native fallback",
+	"editor.noEditorInstalled": "No editor installed",
 	"editor.openInAria": "Open in {{name}}",
 	"editor.openInTarget": "Open in {{name}}",
 	"editor.openOptionsAria": "Open workspace options",

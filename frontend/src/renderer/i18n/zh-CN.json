@@ -389,6 +389,7 @@
 	"editor.preparingWorkspace": "正在准备工作区…",
 	"editor.chooseEditor": "选择编辑器",
 	"editor.chooseEditorTitle": "选择已安装的编辑器或系统应用",
+	"editor.noEditorInstalled": "未安装编辑器",
 	"editor.openInAria": "在 {{name}} 中打开",
 	"editor.openInTarget": "在 {{name}} 中打开",
 	"editor.openOptionsAria": "打开工作区选项",

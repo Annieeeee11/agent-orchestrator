@@ -389,6 +389,7 @@
 	"editor.preparingWorkspace": "ワークスペースを準備中…",
 	"editor.chooseEditor": "エディターを選択",
 	"editor.chooseEditorTitle": "インストール済みのエディターまたは標準アプリを選択",
+	"editor.noEditorInstalled": "エディターがインストールされていません",
 	"editor.openInAria": "{{name}} で開く",
 	"editor.openInTarget": "{{name}} で開く",
 	"editor.openOptionsAria": "ワークスペースを開くオプション",

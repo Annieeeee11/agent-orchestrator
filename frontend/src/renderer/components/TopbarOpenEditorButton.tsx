@@ -102,12 +102,13 @@ export function TopbarOpenEditorButton({
 		? state?.unavailableReason ?? t("editor.workspaceUnavailable")
 		: null;
 	const visibleActionError = launchError ?? workspaceError;
+	const noEditorInstalled = !stateQuery.isPending && workspaceAvailable && editors.length === 0;
 	const mainTitle = stateQuery.isPending
 		? t("editor.preparingWorkspace")
 		: (workspaceError
 			?? (preferred
 				? t("editor.openWorkspaceInTitle", { name: preferred.name })
-				: t("editor.chooseEditorTitle")));
+				: (noEditorInstalled ? t("editor.noEditorInstalled") : t("editor.chooseEditorTitle"))));
 
 	return (
 		<>
@@ -129,7 +130,7 @@ export function TopbarOpenEditorButton({
 									? t("editor.preparingWorkspace")
 									: preferred
 										? t("editor.openInAria", { name: preferred.name })
-										: t("editor.chooseEditor")}
+										: (noEditorInstalled ? t("editor.noEditorInstalled") : t("editor.chooseEditor"))}
 								className="hover:bg-transparent"
 								disabled={mainDisabled}
 								onClick={() => launch()}

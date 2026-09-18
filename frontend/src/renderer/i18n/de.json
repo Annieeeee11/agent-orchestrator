@@ -389,6 +389,7 @@
 	"editor.preparingWorkspace": "Arbeitsbereich wird vorbereitet…",
 	"editor.chooseEditor": "Editor auswählen",
 	"editor.chooseEditorTitle": "Installierten Editor oder native Option auswählen",
+	"editor.noEditorInstalled": "Kein Editor installiert",
 	"editor.openInAria": "In {{name}} öffnen",
 	"editor.openInTarget": "In {{name}} öffnen",
 	"editor.openOptionsAria": "Optionen zum Öffnen des Arbeitsbereichs",

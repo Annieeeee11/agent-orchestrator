@@ -391,6 +391,7 @@
 	"editor.preparingWorkspace": "Preparando espacio de trabajo…",
 	"editor.chooseEditor": "Elegir editor",
 	"editor.chooseEditorTitle": "Elige un editor instalado o una opción nativa",
+	"editor.noEditorInstalled": "No hay ningún editor instalado",
 	"editor.openInAria": "Abrir en {{name}}",
 	"editor.openInTarget": "Abrir en {{name}}",
 	"editor.openOptionsAria": "Opciones para abrir el espacio de trabajo",

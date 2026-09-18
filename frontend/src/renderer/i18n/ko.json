@@ -389,6 +389,7 @@
 	"editor.preparingWorkspace": "워크스페이스 준비 중…",
 	"editor.chooseEditor": "편집기 선택",
 	"editor.chooseEditorTitle": "설치된 편집기 또는 기본 앱 선택",
+	"editor.noEditorInstalled": "설치된 편집기가 없습니다",
 	"editor.openInAria": "{{name}}에서 열기",
 	"editor.openInTarget": "{{name}}에서 열기",
 	"editor.openOptionsAria": "작업 영역 열기 옵션",
