@@ -136,7 +136,10 @@ describe("TopbarOpenEditorButton", () => {
 		expect(group).toHaveClass("data-[state=open]:bg-interactive-hover");
 	});
 
-	it("keeps the no-editor state visible and offers Finder and Terminal", async () => {
+	// No supported editor means the control is simply blocked: no long guidance
+	// string in the topbar or the menu, just a disabled button, with the native
+	// fallbacks still reachable from the options menu.
+	it("blocks the editor button without guidance copy and still offers Finder and Terminal", async () => {
 		setState({
 			targets: [
 				{ id: "file-manager", name: "Finder", kind: "file_manager" },
@@ -153,7 +156,8 @@ describe("TopbarOpenEditorButton", () => {
 			"Open in Finder",
 			"Open in Terminal",
 		]);
-		expect(screen.getByRole("note")).toHaveTextContent("No supported editor found");
+		expect(screen.queryByRole("note")).not.toBeInTheDocument();
+		expect(document.body.textContent).not.toContain("No supported editor found");
 	});
 
 	it("shows a missing workspace and disables every launch action", async () => {
