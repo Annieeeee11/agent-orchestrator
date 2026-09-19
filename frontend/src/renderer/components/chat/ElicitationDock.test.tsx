@@ -166,6 +166,50 @@ describe("ElicitationDock", () => {
 		expect(onResolve).not.toHaveBeenCalled();
 	});
 
+	it("gives an invalid boolean the error node its aria-describedby names", async () => {
+		const user = userEvent.setup();
+		const onResolve = vi.fn();
+		render(
+			<ElicitationDock
+				activity={activity({
+					inputMode: "form",
+					schema: {
+						type: "object",
+						required: ["diagnostics"],
+						properties: { diagnostics: { type: "boolean", title: "Share diagnostics" } },
+					},
+				})}
+				onResolve={onResolve}
+			/>,
+		);
+
+		const checkbox = screen.getByRole("checkbox", { name: /Share diagnostics/ });
+		expect(checkbox).not.toHaveAttribute("aria-describedby");
+
+		await user.click(screen.getByRole("button", { name: "Continue" }));
+		expect(onResolve).not.toHaveBeenCalled();
+
+		// A description that points at nothing reads as an unlabelled error to a
+		// screen reader, so the target has to exist and carry the wording.
+		const describedBy = checkbox.getAttribute("aria-describedby") ?? "";
+		expect(describedBy).not.toBe("");
+		expect(document.getElementById(describedBy)).toHaveTextContent("This field is required.");
+	});
+
+	it("names the Other row with a visible label rather than a placeholder", () => {
+		render(
+			<ElicitationDock
+				activity={activity({ inputMode: "form", schema: claudeQuestions })}
+				onResolve={vi.fn()}
+			/>,
+		);
+
+		// DESIGN.md §9: a placeholder is an example, never the only name a field has.
+		const other = screen.getByLabelText("Other approach");
+		expect(other).not.toHaveAttribute("placeholder");
+		expect(screen.getByText("Other approach")).toBeVisible();
+	});
+
 	it("opens an external URL only after the user explicitly consents", async () => {
 		const user = userEvent.setup();
 		const openExternal = vi.spyOn(aoBridge.app, "openExternal").mockResolvedValue(undefined);

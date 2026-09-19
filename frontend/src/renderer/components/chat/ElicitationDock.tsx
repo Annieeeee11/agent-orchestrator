@@ -3,16 +3,11 @@ import { ExternalLink, Loader2 } from "lucide-react";
 import { aoBridge } from "../../lib/bridge";
 import { cn } from "../../lib/utils";
 import type { ConversationActivity } from "../../types/conversation";
+import { ACCENT_ACTION_PILL, QUIET_ACTION_PILL } from "./action-pill";
 
 type InputAction = "accept" | "decline" | "cancel";
 type InputValue = string | number | boolean | string[];
 type PropertyEntry = [string, Record<string, unknown>];
-
-const QUIET_ACTION =
-	"inline-flex h-7 items-center gap-1.5 rounded-full border border-border-strong bg-background/20 px-2.5 text-[12.5px] text-foreground/90 transition-colors hover:bg-interactive-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 disabled:pointer-events-none disabled:opacity-50";
-
-const PRIMARY_ACTION =
-	"inline-flex h-7 items-center gap-1.5 rounded-full bg-logo-accent px-2.5 text-[12.5px] text-logo-accent-foreground shadow-sm transition-colors hover:bg-logo-accent-bright focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50";
 
 /**
  * A pending question docks above the composer rather than landing in the
@@ -144,16 +139,16 @@ function URLRequest({
 			) : null}
 			<DockFooter>
 				<div className="flex items-center gap-1.5">
-					<button type="button" className={QUIET_ACTION} disabled={disabled} onClick={() => onResolve("cancel")}>
+					<button type="button" className={QUIET_ACTION_PILL} disabled={disabled} onClick={() => onResolve("cancel")}>
 						Cancel
 					</button>
-					<button type="button" className={QUIET_ACTION} disabled={disabled} onClick={() => onResolve("decline")}>
+					<button type="button" className={QUIET_ACTION_PILL} disabled={disabled} onClick={() => onResolve("decline")}>
 						Decline
 					</button>
 				</div>
 				<button
 					type="button"
-					className={PRIMARY_ACTION}
+					className={ACCENT_ACTION_PILL}
 					disabled={disabled || !parsed}
 					onClick={() => void consent()}
 				>
@@ -249,10 +244,10 @@ function FormRequest({
 			</div>
 			<DockFooter>
 				<div className="flex items-center gap-1.5">
-					<button type="button" className={QUIET_ACTION} disabled={disabled} onClick={() => onResolve("cancel")}>
+					<button type="button" className={QUIET_ACTION_PILL} disabled={disabled} onClick={() => onResolve("cancel")}>
 						Cancel
 					</button>
-					<button type="button" className={QUIET_ACTION} disabled={disabled} onClick={() => onResolve("decline")}>
+					<button type="button" className={QUIET_ACTION_PILL} disabled={disabled} onClick={() => onResolve("decline")}>
 						Skip
 					</button>
 				</div>
@@ -260,7 +255,7 @@ function FormRequest({
 					{hasPreviousQuestion ? (
 						<button
 							type="button"
-							className={QUIET_ACTION}
+							className={QUIET_ACTION_PILL}
 							disabled={disabled}
 							onClick={() => {
 								setMissing(new Set());
@@ -270,7 +265,7 @@ function FormRequest({
 							Back
 						</button>
 					) : null}
-					<button type="submit" className={cn(PRIMARY_ACTION, "min-w-20 justify-center")} disabled={disabled}>
+					<button type="submit" className={cn(ACCENT_ACTION_PILL, "min-w-20 justify-center")} disabled={disabled}>
 						{disabled ? (
 							<Loader2 aria-label="Sending answer" className="size-3.5 animate-spin" />
 						) : hasNextQuestion ? (
@@ -381,31 +376,38 @@ function FormField({
 
 	if (property.type === "boolean") {
 		return (
-			<label
-				className={cn(
-					"flex min-h-10 min-w-0 cursor-pointer items-center gap-2.5 px-3 py-2 transition-colors hover:bg-interactive-hover",
-					rows ? "" : "rounded-lg",
-				)}
-			>
-				<input
-					type="checkbox"
-					checked={value === true}
-					disabled={disabled}
-					aria-required={required || undefined}
-					aria-invalid={invalid || undefined}
-					aria-describedby={invalid ? errorId : undefined}
-					onChange={(event) => onChange(event.target.checked)}
-					className="size-3 shrink-0 accent-[var(--logo-accent)]"
-				/>
-				<span className="min-w-0 flex-1">
-					<span className="block text-xs leading-relaxed text-foreground">{label}</span>
-					{description ? (
-						<span className="mt-0.5 block text-[11px] leading-relaxed text-muted-foreground">
-							{description}
-						</span>
-					) : null}
-				</span>
-			</label>
+			<>
+				<label
+					className={cn(
+						"flex min-h-10 min-w-0 cursor-pointer items-center gap-2.5 px-3 py-2 transition-colors hover:bg-interactive-hover",
+						rows ? "" : "rounded-lg",
+					)}
+				>
+					<input
+						type="checkbox"
+						checked={value === true}
+						disabled={disabled}
+						aria-required={required || undefined}
+						aria-invalid={invalid || undefined}
+						aria-describedby={invalid ? errorId : undefined}
+						onChange={(event) => onChange(event.target.checked)}
+						className="size-3 shrink-0 accent-[var(--logo-accent)]"
+					/>
+					<span className="min-w-0 flex-1">
+						<span className="block text-xs leading-relaxed text-foreground">{label}</span>
+						{description ? (
+							<span className="mt-0.5 block text-[11px] leading-relaxed text-muted-foreground">
+								{description}
+							</span>
+						) : null}
+					</span>
+				</label>
+				{invalid ? (
+					<p id={errorId} className={cn("px-3 text-[11px] text-destructive", rows ? "pb-1" : "pt-1")}>
+						This field is required.
+					</p>
+				) : null}
+			</>
 		);
 	}
 
@@ -415,8 +417,6 @@ function FormField({
 			id={id}
 			type={numeric ? "number" : "text"}
 			aria-required={required || undefined}
-			aria-label={rows ? label : undefined}
-			placeholder={rows ? label : undefined}
 			min={typeof property.minimum === "number" ? property.minimum : undefined}
 			max={typeof property.maximum === "number" ? property.maximum : undefined}
 			step={property.type === "integer" ? 1 : undefined}
@@ -428,21 +428,30 @@ function FormField({
 			aria-describedby={invalid ? errorId : undefined}
 			onChange={(event) => onChange(numeric && event.target.value !== "" ? Number(event.target.value) : event.target.value)}
 			className={cn(
-				"w-full min-w-0 bg-transparent text-xs leading-relaxed text-foreground outline-none placeholder:text-muted-foreground",
-				rows ? "" : "mt-1.5 h-8 rounded-lg border bg-background/40 px-2.5 transition-colors focus-visible:border-border-strong",
-				rows ? "" : invalid ? "border-destructive" : "border-border",
+				"h-8 w-full min-w-0 rounded-lg border bg-background/40 px-2.5 text-xs leading-relaxed text-foreground outline-none transition-colors focus-visible:border-border-strong",
+				rows ? "mt-1" : "mt-1.5",
+				invalid ? "border-destructive" : "border-border",
 			)}
 		/>
 	);
 
 	// A Claude "Other" answer is one more way to answer the question above it, so
-	// it is one more row, with its title carried by the placeholder.
+	// it is one more row, indented into the column the choices keep for their
+	// radio. Its title is a quiet visible label above the field rather than a
+	// placeholder: DESIGN.md §9 allows a placeholder as an example, never as the
+	// only name a field has.
 	if (rows) {
 		return (
 			<>
-				<div className="flex min-h-10 min-w-0 items-center gap-2.5 px-3 py-2 transition-colors focus-within:bg-interactive-hover">
+				<div className="flex min-w-0 items-start gap-2.5 px-3 py-2">
 					<span aria-hidden="true" className="size-3 shrink-0" />
-					{control}
+					<span className="flex min-w-0 flex-1 flex-col">
+						<label htmlFor={id} className="text-[11px] leading-snug text-muted-foreground">
+							{label}
+							{required ? " *" : ""}
+						</label>
+						{control}
+					</span>
 				</div>
 				{invalid ? (
 					<p id={errorId} className="px-3 pb-1 text-[11px] text-destructive">
